@@ -1,6 +1,8 @@
 use tokio::io::{AsyncBufRead, AsyncBufReadExt};
 use tokio::io::{AsyncReadExt, AsyncWriteExt}; // adds new methods on TcpStream etc. // allows for conn.lines()
 
+mod state;
+
 async fn broadcast(name: &String, line: String) -> Result<(), String> {
     println!("<{name}> {line}");
     return Ok(());
@@ -31,6 +33,8 @@ async fn chat_conn(mut conn: tokio::net::TcpStream) -> Result<(), String> {
 
 #[tokio::main]
 async fn main() -> Result<(), String> {
+
+    let server = state::ChatServerState::new();
     let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
         .await
         .map_err(|e| e.to_string())?;
